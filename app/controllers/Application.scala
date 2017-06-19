@@ -12,11 +12,22 @@ import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import services.{SunService, WeatherService}
 import model.SunInfo
+import java.util.concurrent.TimeUnit
+import akka.util.Timeout
+import akka.pattern.ask
+import akka.actor.ActorSystem
+import actors.StatsActor
 
 class Application(sunService: SunService,
-                  weatherService: WeatherService) extends Controller {
+                  weatherService: WeatherService,
+                  actorSystem: ActorSystem) extends Controller {
 
   def index = Action.async {
+
+    implicit val timeout = Timeout(5, TimeUnit.SECONDS)
+    val requestF = (actorSystem.actorSelection(StatsActor.path) ?
+      StatsActor.GetStats).mapTo[Int]
+
     val lat = -33.8830
     val lon = 151.2167
     val sunInfoF = sunService.getSunInfo(lat, lon)
@@ -25,8 +36,9 @@ class Application(sunService: SunService,
     for {
       sunInfo <- sunInfoF
       temperature <- temperatureF
+      requests <- requestF
     } yield {
-      Ok(views.html.index(sunInfo, temperature))
+      Ok(views.html.index(sunInfo, temperature, requests))
     }
   }
 }
