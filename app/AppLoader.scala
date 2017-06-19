@@ -3,9 +3,11 @@ import play.api.ApplicationLoader.Context
 import play.api._
 import play.api.routing.Router
 import play.api.libs.ws.ahc.AhcWSComponents
+import play.api.mvc.{Filter, EssentialFilter}
 import router.Routes
 import com.softwaremill.macwire._
 import services.{SunService, WeatherService}
+import filters.StatsFilter
 
 import scala.concurrent.Future
 
@@ -35,4 +37,7 @@ trait AppComponents extends BuiltInComponents with AhcWSComponents {
 
   lazy val sunService = wire[SunService]
   lazy val weatherService = wire[WeatherService]
+
+  lazy val statsFilter: Filter = wire[StatsFilter]
+  override lazy val httpFilters = Seq(statsFilter)
 }
