@@ -23,12 +23,26 @@ class SunWeatherComponent extends Component {
 
   render = () => {
     return (
-      <div>
-        <div>Sunrise Time: {this.state.sunrise}</div>
-        <div>Sunset Time: {this.state.sunset}</div>
-        <div>Current Temperature: {this.state.temperature}</div>
-        <div>Requests: {this.state.requests}</div>
-      </div>
+      <table>
+        <tbody>
+          <tr>
+            <td>Sunrise time</td>
+            <td>{this.state.sunrise}</td>
+          </tr>
+          <tr>
+            <td>Sunset Time</td>
+            <td>{this.state.sunset}</td>
+          </tr>
+          <tr>
+            <td>Current temperature</td>
+            <td>{this.state.temperature}</td>
+          </tr>
+          <tr>
+            <td>Requests</td>
+            <td>{this.state.requests}</td>
+          </tr>
+        </tbody>
+      </table>
     );
   }
 }
